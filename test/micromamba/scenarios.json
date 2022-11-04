@@ -1,0 +1,10 @@
+{
+    "install-specific-version": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {
+                "version": "0"
+            }
+        }
+    }
+}
