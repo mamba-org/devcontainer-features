@@ -3,8 +3,15 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "mads-hartmann.bash-ide-vscode"
-            ]
+                "mads-hartmann.bash-ide-vscode",
+                "EditorConfig.EditorConfig",
+                "foxundermoon.shell-format",
+                "timonwong.shellcheck",
+                "redhat.vscode-yaml"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh"
+            }
         }
     },
     "features": {
