@@ -24,8 +24,7 @@ jobs:
         id: filter
         with:
           filters: |
-            color: ./**/color/**
-            hello: ./**/hello/**
+            micromamba: ./**/micromamba/**
   test-detects:
     needs:
       - detect-changes
@@ -74,8 +73,7 @@ jobs:
     strategy:
       matrix:
         features:
-          - color
-          - hello
+          - micromamba
         baseImage:
           - debian:stable-slim
           - ubuntu:focal
@@ -98,8 +96,7 @@ jobs:
     strategy:
       matrix:
         features:
-          - color
-          - hello
+          - micromamba
     steps:
       - uses: actions/checkout@v3
 
