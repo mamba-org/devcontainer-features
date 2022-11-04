@@ -1,0 +1,21 @@
+{
+    "name": "micromamba",
+    "id": "micromamba",
+    "version": "0.0.1",
+    "description": "Installs micromamba, the fast cross-platform package manager.",
+    "documentationURL": "https://github.com/eitsupi/mamba-devcontainer-features/tree/main/src/micromamba",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "1"
+            ],
+            "default": "latest",
+            "description": "Select version of micromamba."
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
