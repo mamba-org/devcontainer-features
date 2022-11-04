@@ -104,7 +104,7 @@ install_micromamba() {
     fi
     url="https://micro.mamba.pm/api/micromamba/linux-${arch}/${version}"
 
-    check_packages curl ca-certificates
+    check_packages curl ca-certificates bzip2
     echo "Downloading micromamba..."
     curl -sL "${url}" | tar -xj -C /usr/local/bin/ --strip-components=1 bin/micromamba
 }
