@@ -3,7 +3,7 @@
         "image": "debian:stable-slim",
         "features": {
             "micromamba": {
-                "version": "0"
+                "version": "0.27.0"
             }
         }
     }
