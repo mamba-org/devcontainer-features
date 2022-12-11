@@ -71,5 +71,7 @@ if [ "${ADD_CONDA_FORGE}" = "true" ]; then
     micromamba_as_user config append channels conda-forge
 fi
 micromamba_as_user config set channel_priority strict
+micromamba_as_user shell init --shell=bash
+micromamba_as_user shell init --shell=zsh
 
-echo "Done!"
+echo "Done installing micromamba!"
