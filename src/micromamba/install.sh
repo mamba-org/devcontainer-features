@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
+set -e
+
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
 
 micromamba_destination="/usr/local/bin"
-
-set -e
 
 # shellcheck source=./utils.sh
 source ./utils.sh
