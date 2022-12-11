@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+FEATURE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "${FEATURE_DIR}"
 
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
