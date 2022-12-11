@@ -7,13 +7,13 @@ cd "${FEATURE_DIR}"
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
 ADD_CONDA_FORGE=$ADDCONDAFORGE
-USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 
 micromamba_destination="/usr/local/bin"
 
 # shellcheck source=./utils.sh
 source ./utils.sh
 
+USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 detect_user USERNAME
 
 require_running_as_root
