@@ -6,13 +6,14 @@ cd "${FEATURE_DIR}"
 
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
+USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 
 micromamba_destination="/usr/local/bin"
 
 # shellcheck source=./utils.sh
 source ./utils.sh
 
-clean_up_apt
+detect_user USERNAME
 
 require_running_as_root
 
