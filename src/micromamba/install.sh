@@ -49,6 +49,10 @@ install_micromamba() {
     echo "Micromamba download complete."
 }
 
+micromamba_as_user() {
+    su "${USERNAME}" bash -c "micromamba $*"
+}    
+
 export DEBIAN_FRONTEND=noninteractive
 
 if [ "${REINSTALL}" = "false" ]; then
@@ -62,8 +66,8 @@ fi
 install_micromamba "${VERSION}" "${micromamba_destination}"
 
 if [ "${ADD_CONDA_FORGE}" = "true" ]; then
-    su "${USERNAME}" micromamba config append channels conda-forge
+    micromamba_as_user config append channels conda-forge
 fi
-su "${USERNAME}" micromamba config set channel_priority strict
+micromamba_as_user config set channel_priority strict
 
 echo "Done!"
