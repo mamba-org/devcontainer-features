@@ -6,7 +6,7 @@ set -e
 source dev-container-features-test-lib
 
 # Feature-specific tests
-check "default (latest) version" micromamba --version
+check "test-reinstall" micromamba --version | grep "1.0.0"
 
 # Report result
 reportResults

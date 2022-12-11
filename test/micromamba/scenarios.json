@@ -6,5 +6,22 @@
                 "version": "0.27.0"
             }
         }
+    },
+    "test-no-reinstall": {
+        "image": "mambaorg/micromamba:0.26.0",
+        "features": {
+            "micromamba": {
+                "version": "1.0.0"
+            }
+        }
+    },
+    "test-reinstall": {
+        "image": "mambaorg/micromamba:0.25.0",
+        "features": {
+            "micromamba": {
+                "version": "1.0.0",
+                "reinstall": true
+            }
+        }
     }
 }
