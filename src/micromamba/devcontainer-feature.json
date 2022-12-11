@@ -9,10 +9,15 @@
             "type": "string",
             "proposals": [
                 "latest",
-                "1"
+                "1.0.0"
             ],
             "default": "latest",
-            "description": "Select version of micromamba."
+            "description": "Exact version of Micromamba to install (must be X.Y.Z)"
+        },
+        "reinstall": {
+            "type": "boolean",
+            "default": "false",
+            "description": "Reinstall in case Micromamba already exists"
         }
     },
     "installsAfter": [

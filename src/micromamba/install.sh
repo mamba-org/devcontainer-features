@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 VERSION=${VERSION:-"latest"}
+REINSTALL=${REINSTALL:-"false"}
 
 micromamba_destination="/usr/local/bin"
 
@@ -36,6 +37,14 @@ install_micromamba() {
 }
 
 export DEBIAN_FRONTEND=noninteractive
+
+if [ "${REINSTALL}" = "false" ]; then
+    if type micromamba > /dev/null 2>&1; then
+        echo "Detected existing micromamba: $(micromamba --version)."
+        echo "The reinstall argument is false, so not overwriting."
+        exit 0
+    fi
+fi
 
 install_micromamba "${VERSION}" "${micromamba_destination}"
 
