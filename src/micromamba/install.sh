@@ -22,6 +22,13 @@ download_with_curl() {
     curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
 }
 
+ensure_download_prerequisites() {
+    # This is the only place we need to use apt, so we can scope clean_up_apt tightly:
+    clean_up_apt
+    check_packages curl ca-certificates bzip2
+    clean_up_apt
+}
+
 install_micromamba() {
     local version=$1
     local destination=$2
@@ -33,8 +40,8 @@ install_micromamba() {
     fi
     url="https://micro.mamba.pm/api/micromamba/linux-${arch}/${version}"
 
-    check_packages curl ca-certificates bzip2
     echo "Downloading micromamba from ${url}..."
+    ensure_download_prerequisites
     download_with_curl "${url}" "${destination}"
 }
 
