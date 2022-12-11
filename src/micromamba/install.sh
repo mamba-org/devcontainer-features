@@ -59,11 +59,13 @@ if [ "${REINSTALL}" = "false" ]; then
     if type micromamba > /dev/null 2>&1; then
         echo "Detected existing micromamba: $(micromamba --version)."
         echo "The reinstall argument is false, so not overwriting."
-        exit 0
+        skip_install="true"
     fi
 fi
 
-install_micromamba "${VERSION}" "${micromamba_destination}"
+if [ "${skip_install}" != "true" ]; then
+    install_micromamba "${VERSION}" "${micromamba_destination}"
+fi
 
 if [ "${ADD_CONDA_FORGE}" = "true" ]; then
     micromamba_as_user config append channels conda-forge
