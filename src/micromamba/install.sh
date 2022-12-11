@@ -4,10 +4,13 @@ set -e
 FEATURE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${FEATURE_DIR}"
 
+# Options
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
 ADD_CONDA_FORGE=$ADDCONDAFORGE
 
+# Constants
+MAMBA_ROOT_PREFIX="/opt/conda"
 micromamba_destination="/usr/local/bin"
 
 # shellcheck source=./utils.sh
@@ -54,6 +57,8 @@ micromamba_as_user() {
 }    
 
 export DEBIAN_FRONTEND=noninteractive
+
+ensure_path_for_login_shells
 
 if [ "${REINSTALL}" = "false" ]; then
     if type micromamba > /dev/null 2>&1; then

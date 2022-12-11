@@ -25,6 +25,10 @@
             "description": "Add conda-forge channel to the config?"
         }
     },
+    "containerEnv": {
+        "MAMBA_ROOT_PREFIX": "/opt/conda",
+        "PATH": "/opt/conda/bin:${PATH}"
+    },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils"
     ]
