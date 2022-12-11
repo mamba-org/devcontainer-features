@@ -2,6 +2,8 @@
 
 VERSION=${VERSION:-"latest"}
 
+micromamba_destination="/usr/local/bin"
+
 set -e
 
 # shellcheck source=./utils.sh
@@ -13,6 +15,7 @@ require_running_as_root
 
 install_micromamba() {
     local version=$1
+    local destination=$2
     local arch
     local url
     arch="$(uname -m)"
@@ -23,12 +26,12 @@ install_micromamba() {
 
     check_packages curl ca-certificates bzip2
     echo "Downloading micromamba from ${url}..."
-    curl -sL "${url}" | tar -xj -C /usr/local/bin/ --strip-components=1 bin/micromamba
+    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
 }
 
 export DEBIAN_FRONTEND=noninteractive
 
-install_micromamba "${VERSION}"
+install_micromamba "${VERSION}" "${micromamba_destination}"
 
 clean_up_apt
 
