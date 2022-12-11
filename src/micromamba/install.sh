@@ -18,17 +18,17 @@ detect_user USERNAME
 
 require_running_as_root
 
-download_with_curl() {
-    local url=$1
-    local destination=$2
-    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
-}
-
 ensure_download_prerequisites() {
     # This is the only place we need to use apt, so we can scope clean_up_apt tightly:
     clean_up_apt
     check_packages curl ca-certificates bzip2
     clean_up_apt
+}
+
+download_with_curl() {
+    local url=$1
+    local destination=$2
+    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
 }
 
 install_micromamba() {
