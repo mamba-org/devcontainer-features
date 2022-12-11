@@ -42,8 +42,8 @@ install_micromamba() {
     fi
     url="https://micro.mamba.pm/api/micromamba/linux-${arch}/${version}"
 
-    echo "Downloading micromamba from ${url}..."
     ensure_download_prerequisites
+    echo "Downloading micromamba from ${url}..."
     download_with_curl "${url}" "${destination}"
 }
 
