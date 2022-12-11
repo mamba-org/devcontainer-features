@@ -58,6 +58,6 @@ fi
 
 install_micromamba "${VERSION}" "${micromamba_destination}"
 
-clean_up_apt
+su "${USERNAME}" micromamba config set channel_priority strict
 
 echo "Done!"
