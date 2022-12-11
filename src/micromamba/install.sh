@@ -72,6 +72,24 @@ if [ "${skip_install}" != "true" ]; then
     install_micromamba "${VERSION}" "${micromamba_destination}"
 fi
 
+add_conda_group() {
+    if ! cat /etc/group | grep -e "^conda:" > /dev/null 2>&1; then
+        groupadd -r conda
+    fi
+}
+
+initialize_root_prefix() {
+    mkdir -p "${MAMBA_ROOT_PREFIX}/conda-meta"
+    touch "${MAMBA_ROOT_PREFIX}/conda-meta/history"
+    add_conda_group
+    usermod -a -G conda "${USERNAME}"
+    chown -R "${USERNAME}:conda" "${MAMBA_ROOT_PREFIX}"
+    chmod -R g+r+w "${MAMBA_ROOT_PREFIX}"
+    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+s
+}
+
+initialize_root_prefix
+
 if [ "${ADD_CONDA_FORGE}" = "true" ]; then
     echo "Appending 'conda-forge' to channels"
     micromamba_as_user config append channels conda-forge
