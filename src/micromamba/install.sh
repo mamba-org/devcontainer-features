@@ -52,8 +52,12 @@ install_micromamba() {
     echo "Micromamba download complete."
 }
 
+run_as_user() {
+    su "${USERNAME}" "${@}"
+}
+
 micromamba_as_user() {
-    su "${USERNAME}" bash -c "micromamba $*"
+    run_as_user bash -c "micromamba $*"
 }    
 
 export DEBIAN_FRONTEND=noninteractive
