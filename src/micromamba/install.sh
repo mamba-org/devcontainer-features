@@ -68,10 +68,14 @@ if [ "${skip_install}" != "true" ]; then
 fi
 
 if [ "${ADD_CONDA_FORGE}" = "true" ]; then
+    echo "Appending 'conda-forge' to channels"
     micromamba_as_user config append channels conda-forge
 fi
+echo "Setting channel_priority to strict"
 micromamba_as_user config set channel_priority strict
+echo "Initializing Bash shell"
 micromamba_as_user shell init --shell=bash
+echo "Initializing zsh shell"
 micromamba_as_user shell init --shell=zsh
 
 echo "Done installing micromamba!"
