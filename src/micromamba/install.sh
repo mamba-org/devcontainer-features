@@ -13,6 +13,12 @@ clean_up_apt
 
 require_running_as_root
 
+download_with_curl() {
+    local url=$1
+    local destination=$2
+    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
+}
+
 install_micromamba() {
     local version=$1
     local destination=$2
@@ -26,7 +32,7 @@ install_micromamba() {
 
     check_packages curl ca-certificates bzip2
     echo "Downloading micromamba from ${url}..."
-    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
+    download_with_curl "${url}" "${destination}"
 }
 
 export DEBIAN_FRONTEND=noninteractive
