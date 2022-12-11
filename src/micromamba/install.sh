@@ -6,6 +6,7 @@ cd "${FEATURE_DIR}"
 
 VERSION=${VERSION:-"latest"}
 REINSTALL=${REINSTALL:-"false"}
+ADD_CONDA_FORGE=$ADDCONDAFORGE
 USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 
 micromamba_destination="/usr/local/bin"
@@ -58,6 +59,9 @@ fi
 
 install_micromamba "${VERSION}" "${micromamba_destination}"
 
+if [ "${ADD_CONDA_FORGE}" = "true" ]; then
+    su "${USERNAME}" micromamba config append channels conda-forge
+fi
 su "${USERNAME}" micromamba config set channel_priority strict
 
 echo "Done!"
