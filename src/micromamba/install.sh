@@ -72,6 +72,7 @@ fi
 
 if [ "${skip_install}" != "true" ]; then
     install_micromamba "${VERSION}" "${micromamba_destination}"
+    echo "Micromamba executable installed."
 fi
 
 add_conda_group() {
@@ -109,6 +110,8 @@ if type zsh > /dev/null 2>&1; then
     micromamba_as_user shell init --shell=zsh
     su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
 fi
+
+echo "Micromamba configured."
 
 clean_up_apt_if_updated
 
