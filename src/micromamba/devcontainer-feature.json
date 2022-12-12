@@ -14,7 +14,7 @@
             "default": "latest",
             "description": "Exact version of Micromamba to install (must be X.Y.Z)"
         },
-        "reinstall": {
+        "allowReinstall": {
             "type": "boolean",
             "default": "false",
             "description": "Reinstall in case Micromamba already exists"

@@ -6,7 +6,7 @@ cd "${FEATURE_DIR}"
 
 # Options
 VERSION=${VERSION:-"latest"}
-REINSTALL=${REINSTALL:-"false"}
+ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
 ADD_CONDA_FORGE=$ADDCONDAFORGE
 
 # Constants
@@ -64,10 +64,10 @@ export DEBIAN_FRONTEND=noninteractive
 
 ensure_path_for_login_shells
 
-if [ "${REINSTALL}" = "false" ]; then
+if [ "${ALLOW_REINSTALL}" = "false" ]; then
     if type micromamba > /dev/null 2>&1; then
         echo "Detected existing micromamba: $(micromamba --version)."
-        echo "The reinstall argument is false, so not overwriting."
+        echo "The allowReinstall argument is false, so not overwriting."
         skip_install="true"
     fi
 fi
