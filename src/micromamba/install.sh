@@ -98,11 +98,18 @@ if [ "${ADD_CONDA_FORGE}" = "true" ]; then
     echo "Appending 'conda-forge' to channels"
     micromamba_as_user config append channels conda-forge
 fi
+
 echo "Setting channel_priority to strict"
 micromamba_as_user config set channel_priority strict
+
 echo "Initializing Bash shell"
 micromamba_as_user shell init --shell=bash
-echo "Initializing zsh shell"
-micromamba_as_user shell init --shell=zsh
+su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
+
+if type zsh > /dev/null 2>&1; then
+    echo "Initializing zsh shell"
+    micromamba_as_user shell init --shell=zsh
+    su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
+fi
 
 echo "Done installing micromamba!"
