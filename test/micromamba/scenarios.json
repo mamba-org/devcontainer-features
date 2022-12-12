@@ -20,7 +20,7 @@
         "features": {
             "micromamba": {
                 "version": "1.0.0",
-                "reinstall": true
+                "allowReinstall": true
             }
         }
     }
