@@ -16,6 +16,9 @@ micromamba_destination="/usr/local/bin"
 # shellcheck source=./utils.sh
 source ./utils.sh
 
+# Note: The apt-cache is cleared on-demand.
+# Thus we don't need here "rm -rf /var/lib/apt/lists/*".
+
 USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 detect_user USERNAME
 
