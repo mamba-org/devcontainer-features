@@ -112,4 +112,4 @@ if type zsh > /dev/null 2>&1; then
     su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
 fi
 
-echo "Done installing micromamba!"
+echo "Done!"
