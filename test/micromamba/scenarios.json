@@ -23,5 +23,19 @@
                 "allowReinstall": true
             }
         }
+    },
+    "test-conda-forge": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {
+                "addCondaForge": true
+            }
+        }
+    },
+    "test-python-install": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {}
+        }
     }
 }

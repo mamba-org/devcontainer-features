@@ -5,8 +5,9 @@ set -e
 # shellcheck source=/dev/null
 source dev-container-features-test-lib
 
-# Feature-specific tests
-check "test-no-reinstall" micromamba --version | grep "0.26.0"
+test_no_reinstall() {
+    micromamba --version | grep "0.26.0"
+}
+check "test-no-reinstall" test_no_reinstall
 
-# Report result
 reportResults

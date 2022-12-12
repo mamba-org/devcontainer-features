@@ -5,9 +5,9 @@ set -e
 # shellcheck source=/dev/null
 source dev-container-features-test-lib
 
-test_reinstall() {
-    micromamba --version | grep "1.0.0"
+conda_forge() {
+    micromamba config get channels | grep -q conda-forge
 }
-check "test-reinstall" test_reinstall
+check "conda-forge" conda_forge
 
 reportResults
