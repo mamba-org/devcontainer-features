@@ -23,9 +23,7 @@ require_running_as_root
 
 ensure_download_prerequisites() {
     # This is the only place we need to use apt, so we can scope clean_up_apt tightly:
-    clean_up_apt
     check_packages curl ca-certificates bzip2
-    clean_up_apt
 }
 
 download_with_curl() {
@@ -111,5 +109,7 @@ if type zsh > /dev/null 2>&1; then
     micromamba_as_user shell init --shell=zsh
     su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
 fi
+
+clean_up_apt_if_updated
 
 echo "Done!"

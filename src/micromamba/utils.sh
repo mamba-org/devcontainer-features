@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 
+# Assume the apt cache is dirty
+apt_cache_state="unaccessed"
+# Other possible values are "updated" and "clean".
+
 clean_up_apt() {
     rm -rf /var/lib/apt/lists/*
+    apt_cache_state="clean"
+}
+
+clean_up_apt_if_updated() {
+    if [ "${apt_cache_state}" = "updated" ]; then
+        clean_up_apt
+    fi
 }
 
 require_running_as_root() {
@@ -13,9 +24,13 @@ require_running_as_root() {
 }
 
 apt_get_update() {
-    if [ "$(find /var/lib/apt/lists/* | wc -l)" = "0" ]; then
+    if [ "${apt_cache_state}" = "unaccessed" ]; then
+        clean_up_apt
+    fi
+    if [ "${apt_cache_state}" = "clean" ]; then
         echo "Running apt-get update..."
         apt-get update -y
+        apt_cache_state="updated"
     fi
 }
 
