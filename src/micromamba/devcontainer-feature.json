@@ -18,10 +18,13 @@
             "default": false,
             "description": "Reinstall in case Micromamba already exists"
         },
-        "addCondaForge": {
-            "type": "boolean",
-            "default": false,
-            "description": "Add conda-forge channel to the config?"
+        "channels": {
+            "type": "string",
+            "default": "",
+            "proposals": [
+                "conda-forge"
+            ],
+            "description": "Comma separated list of Conda channels to add"
         }
     },
     "containerEnv": {

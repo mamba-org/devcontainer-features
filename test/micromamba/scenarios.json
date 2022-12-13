@@ -28,7 +28,15 @@
         "image": "debian:stable-slim",
         "features": {
             "micromamba": {
-                "addCondaForge": true
+                "channels": "conda-forge"
+            }
+        }
+    },
+    "test-multiple-channels": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge,defaults"
             }
         }
     },

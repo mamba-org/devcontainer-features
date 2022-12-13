@@ -7,7 +7,7 @@ cd "${FEATURE_DIR}"
 # Options
 VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
-ADD_CONDA_FORGE=$ADDCONDAFORGE
+IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
 
 # Constants
 MAMBA_ROOT_PREFIX="/opt/conda"
@@ -77,6 +77,49 @@ initialize_root_prefix() {
     find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+s
 }
 
+add_channels() {
+    # Channels source: <https://docs.anaconda.com/anaconda/user-guide/tasks/using-repositories/>
+    anaconda_channels=("defaults" "main" "r" "msys2" "free" "mro" "mro-archive" "archive" "pro" "anaconda-extras" "anaconda")
+    for channel in "${CHANNELS[@]}"; do
+        if [ ! -z "${channel}" ]; then
+            echo "Adding channel ${channel}"
+            micromamba_as_user config append channels "${channel}"
+            if [[ " ${anaconda_channels[*]} " =~ " ${channel} " ]]; then
+                make_anaconda_repository_warning
+            fi
+        fi
+    done
+}
+
+make_anaconda_repository_warning() {
+    # Original source:
+    # <https://github.com/devcontainers/features/blob/baf47e22b0c3dc5b418ac57aae2e750d14bbc9a3/src/conda/install.sh#L104-L119>
+
+    # Display a notice on conda when not running in GitHub Codespaces
+    mkdir -p /usr/local/etc/vscode-dev-containers
+    cat << 'EOF' > /usr/local/etc/vscode-dev-containers/conda-notice.txt
+When using "conda" from outside of GitHub Codespaces, note the Anaconda repository contains
+restrictions on commercial use that may impact certain organizations. See https://aka.ms/ghcs-conda
+EOF
+
+    notice_script="$(cat << 'EOF'
+if [ -t 1 ] && [ "${IGNORE_NOTICE}" != "true" ] && [ "${TERM_PROGRAM}" = "vscode" ] && [ "${CODESPACES}" != "true" ] && [ ! -f "$HOME/.config/vscode-dev-containers/conda-notice-already-displayed" ]; then
+    cat "/usr/local/etc/vscode-dev-containers/conda-notice.txt"
+    mkdir -p "$HOME/.config/vscode-dev-containers"
+    ((sleep 10s; touch "$HOME/.config/vscode-dev-containers/conda-notice-already-displayed") &)
+fi
+EOF
+)"
+
+    if [ -f "/etc/zsh/zshrc" ]; then
+        echo "${notice_script}" | tee -a /etc/zsh/zshrc
+    fi
+
+    if [ -f "/etc/bash.bashrc" ]; then
+        echo "${notice_script}" | tee -a /etc/bash.bashrc
+    fi
+}
+
 export DEBIAN_FRONTEND=noninteractive
 
 ensure_path_for_login_shells
@@ -96,10 +139,7 @@ fi
 
 initialize_root_prefix
 
-if [ "${ADD_CONDA_FORGE}" = "true" ]; then
-    echo "Appending 'conda-forge' to channels"
-    micromamba_as_user config append channels conda-forge
-fi
+add_channels
 
 echo "Setting channel_priority to strict"
 micromamba_as_user config set channel_priority strict
