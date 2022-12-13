@@ -16,7 +16,7 @@
         },
         "allowReinstall": {
             "type": "boolean",
-            "default": "false",
+            "default": false,
             "description": "Reinstall in case Micromamba already exists"
         },
         "addCondaForge": {
