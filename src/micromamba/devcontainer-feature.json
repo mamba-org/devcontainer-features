@@ -8,11 +8,10 @@
         "version": {
             "type": "string",
             "proposals": [
-                "latest",
-                "1.0.0"
+                "latest"
             ],
             "default": "latest",
-            "description": "Exact version of Micromamba to install (must be X.Y.Z)"
+            "description": "Exact version of Micromamba to install, if not latest (must be X.Y.Z)"
         },
         "allowReinstall": {
             "type": "boolean",
