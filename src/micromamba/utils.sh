@@ -34,14 +34,6 @@ clean_up_apt_if_updated() {
     fi
 }
 
-require_running_as_root() {
-    local error_message="${1:-Script must be run as root. Use sudo, su, or add \"USER root\" to your Dockerfile before running this script.}"
-    if [ "$(id -u)" -ne 0 ]; then
-        echo -e "${error_message}"
-        exit 1
-    fi
-}
-
 apt_get_update() {
     if [ "${apt_cache_state}" = "unaccessed" ]; then
         clean_up_apt
@@ -58,6 +50,14 @@ check_packages() {
     if ! dpkg -s "$@" >/dev/null 2>&1; then
         apt_get_update
         apt-get -y install --no-install-recommends "$@"
+    fi
+}
+
+require_running_as_root() {
+    local error_message="${1:-Script must be run as root. Use sudo, su, or add \"USER root\" to your Dockerfile before running this script.}"
+    if [ "$(id -u)" -ne 0 ]; then
+        echo -e "${error_message}"
+        exit 1
     fi
 }
 
