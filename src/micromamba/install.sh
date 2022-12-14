@@ -1,101 +1,45 @@
 #!/usr/bin/env bash
 
-VERSION=${VERSION:-"latest"}
-
-USERNAME=${USERNAME:-"automatic"}
-
 set -e
 
-# Clean up
-rm -rf /var/lib/apt/lists/*
+# Move to the same directory as this script
+FEATURE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "${FEATURE_DIR}"
 
-if [ "$(id -u)" -ne 0 ]; then
-    echo -e 'Script must be run as root. Use sudo, su, or add "USER root" to your Dockerfile before running this script.'
-    exit 1
-fi
+# Options
+VERSION=${VERSION:-"latest"}
+ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
+IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
 
-architecture="$(dpkg --print-architecture)"
-if [ "${architecture}" != "amd64" ] && [ "${architecture}" != "arm64" ]; then
-    echo "(!) Architecture $architecture unsupported"
-    exit 1
-fi
+# Constants
+MAMBA_ROOT_PREFIX="/opt/conda"
+micromamba_destination="/usr/local/bin"
 
-# Determine the appropriate non-root user
-if [ "${USERNAME}" = "auto" ] || [ "${USERNAME}" = "automatic" ]; then
-    USERNAME=""
-    POSSIBLE_USERS=("vscode" "node" "codespace" "$(awk -v val=1000 -F ":" '$3==val{print $1}' /etc/passwd)")
-    for CURRENT_USER in "${POSSIBLE_USERS[@]}"; do
-        if id -u "${CURRENT_USER}" >/dev/null 2>&1; then
-            USERNAME=${CURRENT_USER}
-            break
-        fi
-    done
-    if [ "${USERNAME}" = "" ]; then
-        USERNAME=root
-    fi
-elif [ "${USERNAME}" = "none" ] || ! id -u ${USERNAME} >/dev/null 2>&1; then
-    USERNAME=root
-fi
+# shellcheck source=./utils.sh
+source ./utils.sh
 
-apt_get_update() {
-    if [ "$(find /var/lib/apt/lists/* | wc -l)" = "0" ]; then
-        echo "Running apt-get update..."
-        apt-get update -y
-    fi
+# Note: The apt-cache is cleared on-demand.
+# Thus we don't need here "rm -rf /var/lib/apt/lists/*".
+
+USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
+detect_user USERNAME
+
+require_running_as_root
+
+ensure_download_prerequisites() {
+    # This is the only place we need to use apt, so we can scope clean_up_apt tightly:
+    check_packages curl ca-certificates bzip2
 }
 
-# Checks if packages are installed and installs them if not
-check_packages() {
-    if ! dpkg -s "$@" >/dev/null 2>&1; then
-        apt_get_update
-        apt-get -y install --no-install-recommends "$@"
-    fi
-}
-
-check_git() {
-    if [ ! -x "$(command -v git)" ]; then
-        check_packages git
-    fi
-}
-
-find_version_from_git_tags() {
-    local variable_name=$1
-    local requested_version=${!variable_name}
-    if [ "${requested_version}" = "none" ]; then return; fi
-    local repository=$2
-    local prefix=${3:-"tags/v"}
-    local separator=${4:-"."}
-    local last_part_optional=${5:-"false"}
-    if [ "$(echo "${requested_version}" | grep -o "." | wc -l)" != "2" ]; then
-        local escaped_separator=${separator//./\\.}
-        local last_part
-        if [ "${last_part_optional}" = "true" ]; then
-            last_part="(${escaped_separator}[0-9]+)*?"
-        else
-            last_part="${escaped_separator}[0-9]+"
-        fi
-        local regex="${prefix}\\K[0-9]+${escaped_separator}[0-9]+${last_part}$"
-        local version_list
-        check_git
-        check_packages ca-certificates
-        version_list="$(git ls-remote --tags "${repository}" | grep -oP "${regex}" | tr -d ' ' | tr "${separator}" "." | sort -rV)"
-        if [ "${requested_version}" = "latest" ] || [ "${requested_version}" = "current" ] || [ "${requested_version}" = "lts" ]; then
-            declare -g "${variable_name}"="$(echo "${version_list}" | head -n 1)"
-        else
-            set +e
-            declare -g "${variable_name}"="$(echo "${version_list}" | grep -E -m 1 "^${requested_version//./\\.}([\\.\\s]|$)")"
-            set -e
-        fi
-    fi
-    if [ -z "${!variable_name}" ] || ! echo "${version_list}" | grep "^${!variable_name//./\\.}$" >/dev/null 2>&1; then
-        echo -e "Invalid ${variable_name} value: ${requested_version}\nValid values:\n${version_list}" >&2
-        exit 1
-    fi
-    echo "${variable_name}=${!variable_name}"
+download_with_curl() {
+    local url=$1
+    local destination=$2
+    curl -sL "${url}" | tar -xj -C "${destination}" --strip-components=1 bin/micromamba
 }
 
 install_micromamba() {
     local version=$1
+    local destination=$2
     local arch
     local url
     arch="$(uname -m)"
@@ -104,19 +48,116 @@ install_micromamba() {
     fi
     url="https://micro.mamba.pm/api/micromamba/linux-${arch}/${version}"
 
-    check_packages curl ca-certificates bzip2
-    echo "Downloading micromamba..."
-    curl -sL "${url}" | tar -xj -C /usr/local/bin/ --strip-components=1 bin/micromamba
+    echo "Installing prerequisites for downloading micromamba..."
+    ensure_download_prerequisites
+    echo "Downloading micromamba from ${url}..."
+    download_with_curl "${url}" "${destination}"
+    echo "Micromamba download complete."
+}
+
+run_as_user() {
+    su "${USERNAME}" "${@}"
+}
+
+micromamba_as_user() {
+    run_as_user bash -c "micromamba $*"
+}    
+
+add_conda_group() {
+    if ! cat /etc/group | grep -e "^conda:" > /dev/null 2>&1; then
+        groupadd -r conda
+    fi
+}
+
+initialize_root_prefix() {
+    mkdir -p "${MAMBA_ROOT_PREFIX}/conda-meta"
+    touch "${MAMBA_ROOT_PREFIX}/conda-meta/history"
+    add_conda_group
+    usermod -a -G conda "${USERNAME}"
+    chown -R "${USERNAME}:conda" "${MAMBA_ROOT_PREFIX}"
+    chmod -R g+r+w "${MAMBA_ROOT_PREFIX}"
+    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+s
+}
+
+add_channels() {
+    # Channels source: <https://docs.anaconda.com/anaconda/user-guide/tasks/using-repositories/>
+    anaconda_channels=("defaults" "main" "r" "msys2" "free" "mro" "mro-archive" "archive" "pro" "anaconda-extras" "anaconda")
+    for channel in "${CHANNELS[@]}"; do
+        if [ ! -z "${channel}" ]; then
+            echo "Adding channel ${channel}"
+            micromamba_as_user config append channels "${channel}"
+            if [[ " ${anaconda_channels[*]} " =~ " ${channel} " ]]; then
+                make_anaconda_repository_warning
+            fi
+        fi
+    done
+}
+
+make_anaconda_repository_warning() {
+    # Original source:
+    # <https://github.com/devcontainers/features/blob/baf47e22b0c3dc5b418ac57aae2e750d14bbc9a3/src/conda/install.sh#L104-L119>
+
+    # Display a notice on conda when not running in GitHub Codespaces
+    mkdir -p /usr/local/etc/vscode-dev-containers
+    cat << 'EOF' > /usr/local/etc/vscode-dev-containers/conda-notice.txt
+When using "micromamba" from outside of GitHub Codespaces, note the Anaconda repository contains
+restrictions on commercial use that may impact certain organizations. See https://aka.ms/ghcs-conda
+EOF
+
+    notice_script="$(cat << 'EOF'
+if [ -t 1 ] && [ "${IGNORE_NOTICE}" != "true" ] && [ "${TERM_PROGRAM}" = "vscode" ] && [ "${CODESPACES}" != "true" ] && [ ! -f "$HOME/.config/vscode-dev-containers/conda-notice-already-displayed" ]; then
+    cat "/usr/local/etc/vscode-dev-containers/conda-notice.txt"
+    mkdir -p "$HOME/.config/vscode-dev-containers"
+    ((sleep 10s; touch "$HOME/.config/vscode-dev-containers/conda-notice-already-displayed") &)
+fi
+EOF
+)"
+
+    if [ -f "/etc/zsh/zshrc" ]; then
+        echo "${notice_script}" | tee -a /etc/zsh/zshrc
+    fi
+
+    if [ -f "/etc/bash.bashrc" ]; then
+        echo "${notice_script}" | tee -a /etc/bash.bashrc
+    fi
 }
 
 export DEBIAN_FRONTEND=noninteractive
 
-# Soft version matching
-find_version_from_git_tags VERSION "https://github.com/mamba-org/mamba" "tags/micromamba-"
+ensure_path_for_login_shells
 
-install_micromamba "${VERSION##*-}"
+if [ "${ALLOW_REINSTALL}" = "false" ]; then
+    if type micromamba > /dev/null 2>&1; then
+        echo "Detected existing micromamba: $(micromamba --version)."
+        echo "The allowReinstall argument is false, so not overwriting."
+        skip_install="true"
+    fi
+fi
 
-# Clean up
-rm -rf /var/lib/apt/lists/*
+if [ "${skip_install}" != "true" ]; then
+    install_micromamba "${VERSION}" "${micromamba_destination}"
+    echo "Micromamba executable installed."
+fi
+
+initialize_root_prefix
+
+add_channels
+
+echo "Setting channel_priority to strict"
+micromamba_as_user config set channel_priority strict
+
+echo "Initializing Bash shell"
+micromamba_as_user shell init --shell=bash
+su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
+
+if type zsh > /dev/null 2>&1; then
+    echo "Initializing zsh shell"
+    micromamba_as_user shell init --shell=zsh
+    su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
+fi
+
+echo "Micromamba configured."
+
+clean_up_apt_if_updated
 
 echo "Done!"

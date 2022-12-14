@@ -8,12 +8,28 @@
         "version": {
             "type": "string",
             "proposals": [
-                "latest",
-                "1"
+                "latest"
             ],
             "default": "latest",
-            "description": "Select version of micromamba."
+            "description": "Exact version of Micromamba to install, if not latest (must be X.Y.Z)"
+        },
+        "allowReinstall": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reinstall in case Micromamba already exists"
+        },
+        "channels": {
+            "type": "string",
+            "default": "",
+            "proposals": [
+                "conda-forge"
+            ],
+            "description": "Comma separated list of Conda channels to add"
         }
+    },
+    "containerEnv": {
+        "MAMBA_ROOT_PREFIX": "/opt/conda",
+        "PATH": "/opt/conda/bin:${PATH}"
     },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils"

@@ -3,8 +3,47 @@
         "image": "debian:stable-slim",
         "features": {
             "micromamba": {
-                "version": "0"
+                "version": "0.27.0"
             }
+        }
+    },
+    "test-no-reinstall": {
+        "image": "mambaorg/micromamba:0.26.0",
+        "features": {
+            "micromamba": {
+                "version": "1.0.0"
+            }
+        }
+    },
+    "test-reinstall": {
+        "image": "mambaorg/micromamba:0.25.0",
+        "features": {
+            "micromamba": {
+                "version": "1.0.0",
+                "allowReinstall": true
+            }
+        }
+    },
+    "test-conda-forge": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge"
+            }
+        }
+    },
+    "test-multiple-channels": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge,defaults"
+            }
+        }
+    },
+    "test-python-install": {
+        "image": "debian:stable-slim",
+        "features": {
+            "micromamba": {}
         }
     }
 }
