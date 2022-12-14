@@ -1,8 +1,27 @@
 #!/usr/bin/env bash
 
-# Assume the apt cache is dirty
+# In case we need to use apt-get we cannot trust the cache since it might be old.
+# To avoid any unnecessary operations, we keep track of the cache state here.
 apt_cache_state="unaccessed"
-# Other possible values are "updated" and "clean".
+# Other possible values of apt_cache_state are "updated" and "clean".
+# If apt-get is never run, then this remains as "unaccessed".
+# The only functions which directly modify this state are:
+#   - clean_up_apt
+#   - apt_get_update
+# It is indirectly modified by:
+#   - clean_up_apt_if_updated
+#   - check_packages
+# All apt related invocations should use only these functions.
+# If apt-get is required, then the progression is:
+#   - "unaccessed"
+#   # clean_up_apt
+#   - "clean"
+#   # apt-get update
+#   - "updated"
+#   # apt-get install ...  # one or more times, via check_packages
+#   # clean_up_apt  # via the clean_up_apt_if_updated function
+#   - "clean"
+# and then the script exits.
 
 clean_up_apt() {
     rm -rf /var/lib/apt/lists/*
