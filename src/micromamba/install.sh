@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+
+# Move to the same directory as this script
 FEATURE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${FEATURE_DIR}"
 
