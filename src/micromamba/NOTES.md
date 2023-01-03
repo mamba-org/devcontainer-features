@@ -11,7 +11,7 @@ as a default channel, then use
 
 ```json
 "features": {
-  "ghcr.io/eitsupi/mamba-devcontainer-features/micromamba:0.1": {
+  "ghcr.io/mamba-org/devcontainer-features/micromamba:0.1": {
     "channels": "conda-forge"
   }
 }
