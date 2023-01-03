@@ -1,1 +1,1 @@
-# Experimental Dev Container Feature
+# Mamba Dev Container Features
