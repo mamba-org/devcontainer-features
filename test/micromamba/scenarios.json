@@ -48,5 +48,14 @@
                 "packages": "python,r-base"
             }
         }
+    },
+    "test-packages-option-non-root": {
+        "image": "mcr.microsoft.com/devcontainers/base:debian",
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge",
+                "packages": "python"
+            }
+        }
     }
 }
