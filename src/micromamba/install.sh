@@ -68,7 +68,7 @@ micromamba_install_as_user() {
     local packages="$*"
     if [ -n "${packages}" ]; then
         echo "Installing packages..."
-        micromamba_as_user install -y "${packages}"
+        micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${packages}"
     fi
 }
 
