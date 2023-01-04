@@ -39,11 +39,5 @@
                 "channels": "conda-forge,defaults"
             }
         }
-    },
-    "test-python-install": {
-        "image": "debian:stable-slim",
-        "features": {
-            "micromamba": {}
-        }
     }
 }
