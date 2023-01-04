@@ -40,10 +40,13 @@
             }
         }
     },
-    "test-python-install": {
+    "test-packages-option": {
         "image": "debian:stable-slim",
         "features": {
-            "micromamba": {}
+            "micromamba": {
+                "channels": "conda-forge",
+                "packages": "python,r-base"
+            }
         }
     }
 }
