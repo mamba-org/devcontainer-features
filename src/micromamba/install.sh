@@ -179,10 +179,6 @@ if type zsh > /dev/null 2>&1; then
     su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
 fi
 
-if [ "${USERNAME}" != "root" ]; then
-    chown -R "${USERNAME}:${USERNAME}" "/home/${USERNAME}"
-fi
-
 echo "Micromamba configured."
 
 # shellcheck disable=SC2048 disable=SC2086
