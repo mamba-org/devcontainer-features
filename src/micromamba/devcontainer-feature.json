@@ -30,6 +30,16 @@
             "type": "string",
             "default": "",
             "description": "Comma separated list of packages to install. Should use with the 'channels' option."
+        },
+        "envFile": {
+            "type": "string",
+            "default": "",
+            "description": "Path of the an environment file (spec file) in the container. Referenced by the `micromamba create` command's `-f` option"
+        },
+        "envName": {
+            "type": "string",
+            "default": "",
+            "description": "Should use with the 'envFile' option. Referenced by the `micromamba create` command's `-n` option"
         }
     },
     "containerEnv": {

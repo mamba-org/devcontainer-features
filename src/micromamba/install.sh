@@ -11,6 +11,8 @@ VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
 IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
 IFS=',' read -r -a PACKAGES <<< "$PACKAGES"  # Convert comma-separated list to array
+ENV_FILE=${ENVFILE:-""}
+ENV_NAME=${ENVNAME:-""}
 
 # Constants
 MAMBA_ROOT_PREFIX="/opt/conda"
@@ -70,6 +72,18 @@ micromamba_install_as_user() {
         echo "Installing packages..."
         micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${packages}"
     fi
+}
+
+micromamba_create_as_user() {
+    local env_file="$1"
+    local env_name="$2"
+    local opt="-y -f ${env_file}"
+
+    if [ -n "${env_name}" ]; then
+        opt="${opt} -n ${env_name}"
+    fi
+
+    micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" "${opt}"
 }
 
 add_conda_group() {
@@ -169,6 +183,11 @@ echo "Micromamba configured."
 
 # shellcheck disable=SC2048 disable=SC2086
 micromamba_install_as_user ${PACKAGES[*]}
+
+if [ -n "${ENV_FILE}" ]; then
+    echo "Create env by ${ENV_FILE}..."
+    micromamba_create_as_user "${ENV_FILE}" "${ENV_NAME}"
+fi
 
 micromamba_as_user clean -yaf
 
