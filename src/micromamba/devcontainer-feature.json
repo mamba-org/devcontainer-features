@@ -25,6 +25,11 @@
                 "conda-forge"
             ],
             "description": "Comma separated list of Conda channels to add"
+        },
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "Comma separated list of packages to install. Should use with the 'channels' option."
         }
     },
     "containerEnv": {

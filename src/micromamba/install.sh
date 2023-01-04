@@ -10,6 +10,7 @@ cd "${FEATURE_DIR}"
 VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
 IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
+IFS=',' read -r -a PACKAGES <<< "$PACKAGES"  # Convert comma-separated list to array
 
 # Constants
 MAMBA_ROOT_PREFIX="/opt/conda"
@@ -62,6 +63,14 @@ run_as_user() {
 micromamba_as_user() {
     run_as_user bash -c "micromamba $*"
 }    
+
+micromamba_install_as_user() {
+    local packages="$*"
+    if [ -n "${packages}" ]; then
+        echo "Installing packages..."
+        micromamba_as_user install -y "${packages}"
+    fi
+}
 
 add_conda_group() {
     if ! cat /etc/group | grep -e "^conda:" > /dev/null 2>&1; then
@@ -157,6 +166,11 @@ if type zsh > /dev/null 2>&1; then
 fi
 
 echo "Micromamba configured."
+
+# shellcheck disable=SC2048 disable=SC2086
+micromamba_install_as_user ${PACKAGES[*]}
+
+micromamba_as_user clean -yaf
 
 clean_up_apt_if_updated
 
