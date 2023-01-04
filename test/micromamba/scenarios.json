@@ -57,5 +57,15 @@
                 "packages": "python"
             }
         }
+    },
+    "test-specfile-option-non-root": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "specFile": "/tmp/specfile.yml"
+            }
+        }
     }
 }
