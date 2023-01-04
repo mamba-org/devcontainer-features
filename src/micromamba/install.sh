@@ -147,6 +147,11 @@ EOF
 
 export DEBIAN_FRONTEND=noninteractive
 
+if ! grep -e "^conda:" "/etc/group" >/dev/null 2>&1; then
+    groupadd -r conda
+fi
+usermod -a -G conda "${USERNAME}"
+
 ensure_path_for_login_shells
 
 if [ "${ALLOW_REINSTALL}" = "false" ]; then
@@ -178,6 +183,10 @@ if type zsh > /dev/null 2>&1; then
     micromamba_as_user shell init --shell=zsh
     su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
 fi
+
+chown -R "${USERNAME}:conda" "${MAMBA_ROOT_PREFIX}"
+chmod -R g+r+w "${MAMBA_ROOT_PREFIX}"
+find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+s
 
 echo "Micromamba configured."
 
