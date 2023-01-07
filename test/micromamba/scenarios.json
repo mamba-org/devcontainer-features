@@ -49,15 +49,6 @@
             }
         }
     },
-    "test-packages-option-non-root": {
-        "image": "mcr.microsoft.com/devcontainers/base:debian",
-        "features": {
-            "micromamba": {
-                "channels": "conda-forge",
-                "packages": "python"
-            }
-        }
-    },
     "test-specfile-option-non-root": {
         "build": {
             "dockerfile": "Dockerfile"
@@ -65,6 +56,15 @@
         "features": {
             "micromamba": {
                 "specFile": "/tmp/specfile.yml"
+            }
+        }
+    },
+    "test-packages-option-non-root": {
+        "image": "mcr.microsoft.com/devcontainers/base:debian",
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge",
+                "packages": "python"
             }
         }
     }
