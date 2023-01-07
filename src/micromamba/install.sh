@@ -184,7 +184,7 @@ echo "Micromamba configured."
 # shellcheck disable=SC2048 disable=SC2086
 micromamba_install_as_user ${PACKAGES[*]}
 
-if [ -n "${ENV_FILE}" ]; then
+if [ -f "${ENV_FILE}" ]; then
     echo "Create env by ${ENV_FILE}..."
     micromamba_create_as_user "${ENV_FILE}" "${ENV_NAME}"
 fi
