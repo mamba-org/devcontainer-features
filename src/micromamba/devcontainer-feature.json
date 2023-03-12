@@ -24,7 +24,7 @@
             "proposals": [
                 "conda-forge"
             ],
-            "description": "Comma separated list of Conda channels to add"
+            "description": "Space separated list of Conda channels to add"
         },
         "packages": {
             "type": "string",
@@ -33,7 +33,7 @@
                 "",
                 "python,r-base"
             ],
-            "description": "Comma separated list of packages to install. Should use with the 'channels' option."
+            "description": "Space separated list of packages to install. Should use with the 'channels' option."
         },
         "envFile": {
             "type": "string",

@@ -36,7 +36,7 @@
         "image": "debian:stable-slim",
         "features": {
             "micromamba": {
-                "channels": "conda-forge,defaults"
+                "channels": "conda-forge defaults"
             }
         }
     },
@@ -45,7 +45,7 @@
         "features": {
             "micromamba": {
                 "channels": "conda-forge",
-                "packages": "python,r-base"
+                "packages": "python r-base"
             }
         }
     },

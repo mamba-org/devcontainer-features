@@ -9,8 +9,8 @@ cd "${FEATURE_DIR}"
 # Options
 VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
-IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
-IFS=',' read -r -a PACKAGES <<< "$PACKAGES"  # Convert comma-separated list to array
+IFS=' ' read -r -a CHANNELS <<< "$CHANNELS"  # Convert space-separated list to array
+IFS=' ' read -r -a PACKAGES <<< "$PACKAGES"  # Convert space-separated list to array
 ENV_FILE=${ENVFILE:-""}
 ENV_NAME=${ENVNAME:-""}
 

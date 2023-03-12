@@ -17,7 +17,7 @@ as a default channel, then use
 }
 ```
 
-More generally, `channels` can be a comma-separated list such as "conda-forge,defaults".
+More generally, `channels` can be a space-separated list such as "conda-forge defaults".
 
 ## Install packages with the `packages` option
 
@@ -31,7 +31,7 @@ For example, specify like the following installs `python` and `r-base`.
 "features": {
   "ghcr.io/mamba-org/devcontainer-features/micromamba:1": {
     "channels": "conda-forge",
-    "packages": "python,r-base"
+    "packages": "python r-base"
   }
 }
 ```
