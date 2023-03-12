@@ -65,7 +65,7 @@ run_as_user() {
 }
 
 micromamba_as_user() {
-    run_as_user "${micromamba_destination}/micromamba" "${@}"
+    run_as_user "$(which micromamba)" "${@}"
 }    
 
 micromamba_install_as_user() {
