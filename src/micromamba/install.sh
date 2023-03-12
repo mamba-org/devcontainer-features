@@ -172,6 +172,8 @@ micromamba_as_user config set channel_priority strict
 
 echo "Initializing Bash shell"
 micromamba_as_user shell init --shell=bash
+
+echo "Setting Bash shell to automatically activate"
 su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
 
 if type zsh > /dev/null 2>&1; then
