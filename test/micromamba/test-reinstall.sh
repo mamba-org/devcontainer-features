@@ -6,7 +6,7 @@ set -e
 source dev-container-features-test-lib
 
 test_reinstall() {
-    micromamba --version | grep "1.0.0"
+    micromamba --version | grep "1.3.0"
 }
 check "test-reinstall" test_reinstall
 
