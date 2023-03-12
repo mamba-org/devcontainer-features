@@ -67,5 +67,16 @@
                 "packages": "python"
             }
         }
+    },
+    "test-text-specfile": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "envFile": "/tmp/specfile.txt",
+                "envName": "testenv"
+            }
+        }
     }
 }
