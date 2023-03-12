@@ -29,16 +29,28 @@
         "packages": {
             "type": "string",
             "default": "",
+            "proposals": [
+                "",
+                "python,r-base"
+            ],
             "description": "Comma separated list of packages to install. Should use with the 'channels' option."
         },
         "envFile": {
             "type": "string",
             "default": "",
+            "proposals": [
+                "",
+                "/path/to/spec-file.yml"
+            ],
             "description": "Path of the an environment file (spec file) in the container. Referenced by the `micromamba create` command's `-f` option"
         },
         "envName": {
             "type": "string",
             "default": "",
+            "proposals": [
+                "",
+                "myenv"
+            ],
             "description": "Should use with the 'envFile' option. Referenced by the `micromamba create` command's `-n` option"
         }
     },
