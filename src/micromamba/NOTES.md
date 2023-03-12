@@ -71,3 +71,6 @@ Specify the path to the spec file in the container with the `envFile` option in 
   }
 }
 ```
+
+Please check [the mamba user guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
+for more information about spec files.
