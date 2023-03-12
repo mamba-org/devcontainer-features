@@ -59,31 +59,32 @@ install_micromamba() {
 }
 
 run_as_user() {
-    su "${USERNAME}" "${@}"
+    local cmd=("$@")
+    quoted="$(printf "'%s' " "${cmd[@]}")"
+    su "${USERNAME}" -c "${quoted}"
 }
 
 micromamba_as_user() {
-    run_as_user bash -c "micromamba $*"
+    run_as_user "${micromamba_destination}/micromamba" "${@}"
 }    
 
 micromamba_install_as_user() {
-    local packages="$*"
-    if [ -n "${packages}" ]; then
+    if [ -n "$*" ]; then
         echo "Installing packages..."
-        micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${packages}"
+        micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${@}"
     fi
 }
 
 micromamba_create_as_user() {
     local env_file="$1"
     local env_name="$2"
-    local opt="-y -f ${env_file}"
+    local opt=("--yes" "--file=${env_file}")
 
     if [ -n "${env_name}" ]; then
-        opt="${opt} -n ${env_name}"
+        opt=("${opt[@]}" "--name=${env_name}")
     fi
 
-    micromamba_as_user create "${opt}"
+    micromamba_as_user create "${opt[@]}"
 }
 
 add_conda_group() {
@@ -182,7 +183,7 @@ fi
 echo "Micromamba configured."
 
 # shellcheck disable=SC2048 disable=SC2086
-micromamba_install_as_user ${PACKAGES[*]}
+micromamba_install_as_user "${PACKAGES[@]}"
 
 if [ -f "${ENV_FILE}" ]; then
     echo "Create env by ${ENV_FILE}..."
