@@ -1,1 +1,2 @@
-julia
+wget
+xz<5.2.10

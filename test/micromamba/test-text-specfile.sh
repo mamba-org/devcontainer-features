@@ -11,10 +11,14 @@ eval "$(micromamba shell hook --shell=bash)"
 
 check "activate" micromamba activate testenv
 
-test_julia() {
-    julia --version
+test_wget() {
+    wget --version | grep -q "GNU Wget"
 }
-check "test-julia" test_julia
+test_xz() {
+    xz --version | grep -q "5.2.8"
+}
+check "test-wget" test_wget
+check "test-xz" test_xz
 
 # Report result
 reportResults

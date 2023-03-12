@@ -1,6 +1,6 @@
 {
     "install-specific-version": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
                 "version": "1.2.0"
@@ -25,7 +25,7 @@
         }
     },
     "test-conda-forge": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
                 "channels": "conda-forge"
@@ -33,7 +33,7 @@
         }
     },
     "test-multiple-channels": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
                 "channels": "conda-forge defaults"
@@ -41,11 +41,11 @@
         }
     },
     "test-packages-option": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
-                "channels": "conda-forge",
-                "packages": "python r-base"
+                "channels": "defaults",
+                "packages": "wget xz<5.2.10"
             }
         }
     },
@@ -60,11 +60,11 @@
         }
     },
     "test-packages-option-non-root": {
-        "image": "mcr.microsoft.com/devcontainers/base:debian",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
-                "channels": "conda-forge",
-                "packages": "python"
+                "channels": "defaults",
+                "packages": "wget xz<5.2.10"
             }
         }
     },
@@ -74,7 +74,7 @@
         },
         "features": {
             "micromamba": {
-                "channels": "conda-forge",
+                "channels": "defaults",
                 "envFile": "/tmp/specfile.txt",
                 "envName": "testenv"
             }
