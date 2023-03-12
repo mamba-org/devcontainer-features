@@ -74,6 +74,7 @@
         },
         "features": {
             "micromamba": {
+                "channels": "conda-forge",
                 "envFile": "/tmp/specfile.txt",
                 "envName": "testenv"
             }
