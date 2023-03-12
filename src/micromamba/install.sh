@@ -15,7 +15,7 @@ ENV_FILE=${ENVFILE:-""}
 ENV_NAME=${ENVNAME:-""}
 
 # Constants
-MAMBA_ROOT_PREFIX="/opt/conda"
+export MAMBA_ROOT_PREFIX="/opt/conda"
 micromamba_destination="/usr/local/bin"
 
 # shellcheck source=./utils.sh
