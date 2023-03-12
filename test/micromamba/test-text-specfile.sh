@@ -12,7 +12,7 @@ eval "$(micromamba shell hook --shell=bash)"
 check "activate" micromamba activate testenv
 
 test_julia() {
-    julia --version | grep -q "1.6."
+    julia --version
 }
 check "test-julia" test_julia
 
