@@ -5,6 +5,8 @@ set -e
 # shellcheck source=/dev/null
 source dev-container-features-test-lib
 
+eval "$(micromamba shell hook --shell=bash)"
+
 check "activate" micromamba activate testenv
 
 test_python() {
