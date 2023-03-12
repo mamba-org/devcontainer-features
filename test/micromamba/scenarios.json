@@ -79,5 +79,16 @@
                 "envName": "testenv"
             }
         }
+    },
+    "test-lockfile": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "envFile": "/tmp/conda-lock.yml",
+                "envName": "testenv"
+            }
+        }
     }
 }
