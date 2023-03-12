@@ -83,7 +83,7 @@ micromamba_create_as_user() {
         opt="${opt} -n ${env_name}"
     fi
 
-    micromamba_as_user create --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" "${opt}"
+    micromamba_as_user create "${opt}"
 }
 
 add_conda_group() {
