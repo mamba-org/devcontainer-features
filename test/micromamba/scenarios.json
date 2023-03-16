@@ -1,31 +1,31 @@
 {
     "install-specific-version": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
-                "version": "0.27.0"
+                "version": "1.2.0"
             }
         }
     },
     "test-no-reinstall": {
-        "image": "mambaorg/micromamba:0.26.0",
+        "image": "mambaorg/micromamba:1.2.0",
         "features": {
             "micromamba": {
-                "version": "1.0.0"
+                "version": "1.3.0"
             }
         }
     },
     "test-reinstall": {
-        "image": "mambaorg/micromamba:0.25.0",
+        "image": "mambaorg/micromamba:1.2.0",
         "features": {
             "micromamba": {
-                "version": "1.0.0",
+                "version": "1.3.0",
                 "allowReinstall": true
             }
         }
     },
     "test-conda-forge": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
                 "channels": "conda-forge"
@@ -33,17 +33,62 @@
         }
     },
     "test-multiple-channels": {
-        "image": "debian:stable-slim",
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
             "micromamba": {
-                "channels": "conda-forge,defaults"
+                "channels": "conda-forge defaults"
             }
         }
     },
-    "test-python-install": {
-        "image": "debian:stable-slim",
+    "test-packages-option": {
+        "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
-            "micromamba": {}
+            "micromamba": {
+                "channels": "defaults",
+                "packages": "wget xz<5.2.10"
+            }
+        }
+    },
+    "test-specfile-option-non-root": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "envFile": "/tmp/specfile.yml"
+            }
+        }
+    },
+    "test-packages-option-non-root": {
+        "image": "ghcr.io/maresb/docker-debian-curl",
+        "features": {
+            "micromamba": {
+                "channels": "defaults",
+                "packages": "wget xz<5.2.10"
+            }
+        }
+    },
+    "test-text-specfile": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "channels": "defaults",
+                "envFile": "/tmp/specfile.txt",
+                "envName": "testenv"
+            }
+        }
+    },
+    "test-lockfile": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "envFile": "/tmp/conda-lock.yml",
+                "envName": "testenv"
+            }
         }
     }
 }

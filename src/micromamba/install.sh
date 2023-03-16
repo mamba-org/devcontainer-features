@@ -9,10 +9,13 @@ cd "${FEATURE_DIR}"
 # Options
 VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
-IFS=',' read -r -a CHANNELS <<< "$CHANNELS"  # Convert comma-separated list to array
+IFS=' ' read -r -a CHANNELS <<< "$CHANNELS"  # Convert space-separated list to array
+IFS=' ' read -r -a PACKAGES <<< "$PACKAGES"  # Convert space-separated list to array
+ENV_FILE=${ENVFILE:-""}
+ENV_NAME=${ENVNAME:-""}
 
 # Constants
-MAMBA_ROOT_PREFIX="/opt/conda"
+export MAMBA_ROOT_PREFIX="/opt/conda"
 micromamba_destination="/usr/local/bin"
 
 # shellcheck source=./utils.sh
@@ -56,12 +59,33 @@ install_micromamba() {
 }
 
 run_as_user() {
-    su "${USERNAME}" "${@}"
+    local cmd=("$@")
+    quoted="$(printf "'%s' " "${cmd[@]}")"
+    su - "${USERNAME}" -c "${quoted}"
 }
 
 micromamba_as_user() {
-    run_as_user bash -c "micromamba $*"
+    run_as_user "$(which micromamba)" "${@}"
 }    
+
+micromamba_install_as_user() {
+    if [ -n "$*" ]; then
+        echo "Installing packages..."
+        micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${@}"
+    fi
+}
+
+micromamba_create_as_user() {
+    local env_file="$1"
+    local env_name="$2"
+    local opt=("--yes" "--file=${env_file}")
+
+    if [ -n "${env_name}" ]; then
+        opt=("${opt[@]}" "--name=${env_name}")
+    fi
+
+    micromamba_as_user create "${opt[@]}"
+}
 
 add_conda_group() {
     if ! cat /etc/group | grep -e "^conda:" > /dev/null 2>&1; then
@@ -148,6 +172,8 @@ micromamba_as_user config set channel_priority strict
 
 echo "Initializing Bash shell"
 micromamba_as_user shell init --shell=bash
+
+echo "Setting Bash shell to automatically activate"
 su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
 
 if type zsh > /dev/null 2>&1; then
@@ -157,6 +183,16 @@ if type zsh > /dev/null 2>&1; then
 fi
 
 echo "Micromamba configured."
+
+# shellcheck disable=SC2048 disable=SC2086
+micromamba_install_as_user "${PACKAGES[@]}"
+
+if [ -f "${ENV_FILE}" ]; then
+    echo "Create env by ${ENV_FILE}..."
+    micromamba_create_as_user "${ENV_FILE}" "${ENV_NAME}"
+fi
+
+micromamba_as_user clean -yaf
 
 clean_up_apt_if_updated
 

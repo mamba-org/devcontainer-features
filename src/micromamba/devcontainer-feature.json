@@ -1,7 +1,7 @@
 {
     "name": "micromamba",
     "id": "micromamba",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Installs micromamba, the fast cross-platform package manager.",
     "documentationURL": "https://github.com/mamba-org/devcontainer-features/tree/main/src/micromamba",
     "options": {
@@ -24,7 +24,34 @@
             "proposals": [
                 "conda-forge"
             ],
-            "description": "Comma separated list of Conda channels to add"
+            "description": "Space separated list of Conda channels to add"
+        },
+        "packages": {
+            "type": "string",
+            "default": "",
+            "proposals": [
+                "",
+                "python,r-base"
+            ],
+            "description": "Space separated list of packages to install. Should use with the 'channels' option."
+        },
+        "envFile": {
+            "type": "string",
+            "default": "",
+            "proposals": [
+                "",
+                "/path/to/spec-file.yml"
+            ],
+            "description": "Path of the an environment file (spec file) in the container. Referenced by the `micromamba create` command's `-f` option"
+        },
+        "envName": {
+            "type": "string",
+            "default": "",
+            "proposals": [
+                "",
+                "myenv"
+            ],
+            "description": "Should use with the 'envFile' option. Referenced by the `micromamba create` command's `-n` option"
         }
     },
     "containerEnv": {

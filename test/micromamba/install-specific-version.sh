@@ -6,7 +6,7 @@ set -e
 source dev-container-features-test-lib
 
 specific_version() {
-    micromamba --version | grep "0.27.0"
+    micromamba --version | grep "1.2.0"
 }
 check "specific version" specific_version
 
