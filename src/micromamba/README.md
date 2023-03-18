@@ -47,15 +47,15 @@ More generally, `channels` can be a space-separated list such as "conda-forge de
 
 This Feature supports package installation during image build.
 
-Specify package names separated by commas in the `packages` option.
+Specify package names separated by **spaces** in the `packages` option.
 
-For example, specify like the following installs `python` and `r-base`.
+For example, specify like the following installs `python>=3.11,<3.12` and `r-base`.
 
 ```json
 "features": {
   "ghcr.io/mamba-org/devcontainer-features/micromamba:1": {
     "channels": "conda-forge",
-    "packages": "python r-base"
+    "packages": "python>=3.11,<3.12 r-base"
   }
 }
 ```
