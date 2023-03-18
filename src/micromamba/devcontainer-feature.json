@@ -1,7 +1,7 @@
 {
     "name": "micromamba",
     "id": "micromamba",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Installs micromamba, the fast cross-platform package manager.",
     "documentationURL": "https://github.com/mamba-org/devcontainer-features/tree/main/src/micromamba",
     "options": {
@@ -31,7 +31,7 @@
             "default": "",
             "proposals": [
                 "",
-                "python,r-base"
+                "python>=3.11,<3.12 r-base"
             ],
             "description": "Space separated list of packages to install. Should use with the 'channels' option."
         },
