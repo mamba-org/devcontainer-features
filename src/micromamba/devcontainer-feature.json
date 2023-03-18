@@ -31,7 +31,7 @@
             "default": "",
             "proposals": [
                 "",
-                "python r-base"
+                "python>=3.11,<3.12 r-base"
             ],
             "description": "Space separated list of packages to install. Should use with the 'channels' option."
         },
