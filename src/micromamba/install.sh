@@ -100,7 +100,7 @@ initialize_root_prefix() {
     usermod -a -G conda "${USERNAME}"
     chown -R "${USERNAME}:conda" "${MAMBA_ROOT_PREFIX}"
     chmod -R g+r+w "${MAMBA_ROOT_PREFIX}"
-    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+s
+    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+sw
 }
 
 add_channels() {
