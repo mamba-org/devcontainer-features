@@ -61,7 +61,7 @@ install_micromamba() {
 run_as_user() {
     local cmd=("$@")
     quoted="$(printf "'%s' " "${cmd[@]}")"
-    su - "${USERNAME}" -c "${quoted}"
+    su --whitelist-environment=MAMBA_ROOT_PREFIX - "${USERNAME}" -c "${quoted}"
 }
 
 micromamba_as_user() {
