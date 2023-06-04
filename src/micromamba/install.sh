@@ -66,12 +66,17 @@ run_as_user() {
 
 micromamba_as_user() {
     run_as_user "$(which micromamba)" "${@}"
-}    
+}
+
+fix_base_env_directory_permissions() {
+    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+sw
+}
 
 micromamba_install_as_user() {
     if [ -n "$*" ]; then
         echo "Installing packages..."
         micromamba_as_user install --root-prefix="${MAMBA_ROOT_PREFIX}" --prefix="${MAMBA_ROOT_PREFIX}" -y "${@}"
+        fix_base_env_directory_permissions
     fi
 }
 
@@ -100,7 +105,7 @@ initialize_root_prefix() {
     usermod -a -G conda "${USERNAME}"
     chown -R "${USERNAME}:conda" "${MAMBA_ROOT_PREFIX}"
     chmod -R g+r+w "${MAMBA_ROOT_PREFIX}"
-    find "${MAMBA_ROOT_PREFIX}" -type d -print0 | xargs -n 1 -0 chmod g+sw
+    fix_base_env_directory_permissions
 }
 
 add_channels() {
