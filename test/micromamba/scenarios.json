@@ -1,4 +1,15 @@
 {
+    "test-user-activation": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "micromamba": {
+                "channels": "conda-forge",
+                "packages": "wget"
+            }
+        }
+    },
     "install-specific-version": {
         "image": "ghcr.io/maresb/docker-debian-curl",
         "features": {
