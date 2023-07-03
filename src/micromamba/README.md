@@ -17,6 +17,7 @@ Installs micromamba, the fast cross-platform package manager.
 |-----|-----|-----|-----|
 | version | Exact version of Micromamba to install, if not latest (must be X.Y.Z) | string | latest |
 | allowReinstall | Reinstall in case Micromamba already exists | boolean | false |
+| autoActivate | Auto activation of base environment | boolean | true |
 | channels | Space separated list of Conda channels to add | string | - |
 | packages | Space separated list of packages to install. Should use with the 'channels' option. | string | - |
 | envFile | Path of the an environment file (spec file) in the container. Referenced by the `micromamba create` command's `-f` option | string | - |
