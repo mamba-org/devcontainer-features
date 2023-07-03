@@ -1,7 +1,7 @@
 {
     "name": "micromamba",
     "id": "micromamba",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "description": "Installs micromamba, the fast cross-platform package manager.",
     "documentationURL": "https://github.com/mamba-org/devcontainer-features/tree/main/src/micromamba",
     "options": {
@@ -17,6 +17,11 @@
             "type": "boolean",
             "default": false,
             "description": "Reinstall in case Micromamba already exists"
+        },
+        "autoActivate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Auto activation of base environment"
         },
         "channels": {
             "type": "string",

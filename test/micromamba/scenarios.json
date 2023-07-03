@@ -101,5 +101,13 @@
                 "envName": "testenv"
             }
         }
+    },
+    "test-no-auto-activate":{
+        "image": "ghcr.io/maresb/docker-debian-curl",
+        "features": {
+            "micromamba": {
+                "autoActivate": false
+            }
+        }   
     }
 }

@@ -9,6 +9,7 @@ cd "${FEATURE_DIR}"
 # Options
 VERSION=${VERSION:-"latest"}
 ALLOW_REINSTALL=${ALLOWREINSTALL:-"false"}
+AUTO_ACTIVATE=${AUTOACTIVATE:-"true"}
 IFS=' ' read -r -a CHANNELS <<< "$CHANNELS"  # Convert space-separated list to array
 IFS=' ' read -r -a PACKAGES <<< "$PACKAGES"  # Convert space-separated list to array
 ENV_FILE=${ENVFILE:-""}
@@ -178,13 +179,17 @@ micromamba_as_user config set channel_priority strict
 echo "Initializing Bash shell"
 micromamba_as_user shell init --shell=bash
 
-echo "Setting Bash shell to automatically activate"
-su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
+if [ "${AUTO_ACTIVATE}" = "true" ]; then
+    echo "Setting Bash shell to automatically activate"
+    su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.bashrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.bashrc; fi" - "${USERNAME}"
+fi
 
 if type zsh > /dev/null 2>&1; then
     echo "Initializing zsh shell"
     micromamba_as_user shell init --shell=zsh
-    su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
+    if [ "${AUTO_ACTIVATE}" = "true" ]; then
+        su -c "if ! grep -q 'micromamba activate # added by micromamba devcontainer feature' ~/.zshrc; then echo 'micromamba activate # added by micromamba devcontainer feature' >> ~/.zshrc; fi" - "${USERNAME}"
+    fi
 fi
 
 echo "Micromamba configured."
