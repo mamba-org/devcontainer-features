@@ -18,6 +18,11 @@
             "default": false,
             "description": "Reinstall in case Micromamba already exists"
         },
+        "autoActivate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Auto activation of base environment"
+        },
         "channels": {
             "type": "string",
             "default": "",
